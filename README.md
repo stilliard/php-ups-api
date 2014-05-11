@@ -125,7 +125,7 @@ The TimeInTransit Class allow you to get all transit times using the UPS TimeInT
 $timeInTransit = new TimeInTransit($access, $userid, $passwd);
 
 try {
-    $times = $timeInTransit->getTimeInTransit($timeInTransitequest);
+    $times = $timeInTransit->getTimeInTransit($timeInTransitRequest);
 
 	foreach($times->ServiceSummary as $serviceSummary) {
 		var_dump($serviceSummary);
