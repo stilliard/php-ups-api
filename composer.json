@@ -1,10 +1,9 @@
 {
-    "name": "gabrielbull/ups-api",
+    "name": "sebvergnes/ups-api",
     "type": "library",
     "description": "UPS API PHP Wrapper",
     "keywords": ["ups", "api", "wrapper", "quantum view", "tracking", "shipping", "rate", "rating", "time in transit"],
-    "homepage": "https://github.com/gabrielbull/php-ups-api",
-    "license": "MIT",
+    "homepage": "https://github.com/sebvergnes/php-ups-api",
     "authors": [
         {
             "name": "Gabriel Bull",
