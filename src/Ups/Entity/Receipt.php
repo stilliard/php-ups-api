@@ -1,22 +1,86 @@
 <?php
 namespace Ups\Entity;
 
-class Receipt
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class Receipt implements NodeInterface
 {
-    public $HTMLImage;
-    public $Image;
+    /**
+     * @var string
+     */
+    private $htmlImage;
 
-    function __construct($response = null)
+    /**
+     * @var \Ups\Entity\Image
+     */
+    private $image;
+
+    function __construct($attributes = null)
     {
-        $this->Image = new Image();
+        $this->setImage(new Image());
 
-        if (null != $response) {
-            if (isset($response->HTMLImage)) {
-                $this->HTMLImage = $response->HTMLImage;
+        if (null !== $attributes) {
+            if (isset($attributes->HTMLImage)) {
+                $this->setHtmlImage($attributes->HTMLImage);
             }
-            if (isset($response->Image)) {
-                $this->Image = new Image($response->Image);
+            if (isset($attributes->Image)) {
+                $this->setImage(new Image($attributes->Image));
             }
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('Receipt');
+        $node->appendChild($document->createElement('HTMLImage', $this->getHtmlImage()));
+        $node->appendChild($this->getImage()->toNode($document));
+        return $node;
+    }
+
+    /**
+     * @param string $htmlImage
+     * @return $this
+     */
+    public function setHtmlImage($htmlImage)
+    {
+        $this->htmlImage = $htmlImage;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHtmlImage()
+    {
+        return $this->htmlImage;
+    }
+
+    /**
+     * @param \Ups\Entity\Image $image
+     * @return $this
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\Image
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
 }

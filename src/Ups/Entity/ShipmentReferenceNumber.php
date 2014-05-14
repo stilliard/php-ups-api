@@ -1,28 +1,138 @@
 <?php
 namespace Ups\Entity;
 
-class ShipmentReferenceNumber
-{
-    public $Number;
-    public $BarCodeIndicator;
-    public $Code;
-    public $Value;
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
 
-    function __construct($response = null)
+class ShipmentReferenceNumber implements NodeInterface
+{
+    /**
+     * @var string
+     */
+    private $number;
+
+    /**
+     * @var string
+     */
+    private $barCodeIndicator;
+
+    /**
+     * @var string
+     */
+    private $code;
+
+    /**
+     * @var string
+     */
+    private $value;
+
+    function __construct($attributes = null)
     {
-        if (null != $response) {
-            if (isset($response->Number)) {
-                $this->Number = $response->Number;
+        if (null !== $attributes) {
+            if (isset($attributes->Number)) {
+                $this->setNumber($attributes->Number);
             }
-            if (isset($response->BarCodeIndicator)) {
-                $this->BarCodeIndicator = $response->BarCodeIndicator;
+            if (isset($attributes->BarCodeIndicator)) {
+                $this->setBarCodeIndicator($attributes->BarCodeIndicator);
             }
-            if (isset($response->Code)) {
-                $this->Code = $response->Code;
+            if (isset($attributes->Code)) {
+                $this->setCode($attributes->Code);
             }
-            if (isset($response->Value)) {
-                $this->Value = $response->Value;
+            if (isset($attributes->Value)) {
+                $this->setValue($attributes->Value);
             }
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('ShipmentReferenceNumber');
+        $node->appendChild($document->createElement('Number', $this->getNumber()));
+        $node->appendChild($document->createElement('BarCodeIndicator', $this->getBarCodeIndicator()));
+        $node->appendChild($document->createElement('Code', $this->getCode()));
+        $node->appendChild($document->createElement('Value', $this->getValue()));
+        return $node;
+    }
+
+    /**
+     * @param string $barCodeIndicator
+     * @return $this
+     */
+    public function setBarCodeIndicator($barCodeIndicator)
+    {
+        $this->barCodeIndicator = $barCodeIndicator;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBarCodeIndicator()
+    {
+        return $this->barCodeIndicator;
+    }
+
+    /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $number
+     * @return $this
+     */
+    public function setNumber($number)
+    {
+        $this->number = $number;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
 }

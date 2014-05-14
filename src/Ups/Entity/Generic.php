@@ -1,88 +1,395 @@
 <?php
 namespace Ups\Entity;
 
-class Generic
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class Generic implements NodeInterface
+
 {
     const AT_VOIDFORMANIFEST = 'VM';
     const AT_UNDELIVERABLERETURNS = 'UR';
     const AT_INVOICEREMOVALSUCCESSFUL = 'IR';
     const AT_TRANSPORTCOMPANYUSPSSCAN = 'TC';
-    const AT_POSTALSERVICEPOSSESSIONSCAN =' PS';
+    const AT_POSTALSERVICEPOSSESSIONSCAN = ' PS';
     const AT_UPSEMAILNOTIFICATIONFAILURE = 'FN';
     const AT_DESTINATIONSCAN = 'DS';
 
-    public $ActivityType;
-    public $TrackingNumber;
-    public $ShipperNumber;
-    public $ShipmentReferenceNumber;
-    public $PackageReferenceNumber;
-    public $Service;
-    public $Activity;
-    public $BillToAccount;
-    public $ShipTo;
-    public $RescheduledDeliveryDate;
-    public $FailureNotification;
-    public $Bookmark;
+    /**
+     * @var string
+     */
+    private $activityType;
 
-    function __construct($response = null)
+    /**
+     * @var string
+     */
+    private $trackingNumber;
+
+    /**
+     * @var string
+     */
+    private $shipperNumber;
+
+    /**
+     * @var array
+     */
+    private $shipmentReferenceNumber;
+
+    /**
+     * @var array
+     */
+    private $packageReferenceNumber;
+
+    /**
+     * @var \Ups\Entity\Service
+     */
+    private $service;
+
+    /**
+     * @var \Ups\entity\Activity
+     */
+    private $activity;
+
+    /**
+     * @var \Ups\Entity\BillToAccount
+     */
+    private $billToAccount;
+
+    /**
+     * @var \Ups\Entity\ShipTo
+     */
+    private $shipTo;
+
+    /**
+     * @var string
+     */
+    private $rescheduledDeliveryDate;
+
+    /**
+     * @var \Ups\Entity\FailureNotification
+     */
+    private $failureNotification;
+
+    /**
+     * @var string
+     */
+    private $bookmark;
+
+    function __construct($attributes = null)
     {
-        $this->ShipmentReferenceNumber = new ShipmentReferenceNumber();
-        $this->PackageReferenceNumber = new PackageReferenceNumber();
-        $this->Service = new Service();
-        $this->Activity = new Activity();
-        $this->BillToAccount = new BillToAccount();
-        $this->ShipTo = new ShipTo();
-        $this->FailureNotification = new FailureNotification();
+        $this->setShipmentReferenceNumber(array());
+        $this->setPackageReferenceNumber(array());
+        $this->setService(new Service());
+        $this->setActivity(new Activity());
+        $this->setBillToAccount(new BillToAccount());
+        $this->setShipTo(new ShipTo());
+        $this->setFailureNotification(new FailureNotification());
 
-        if (null != $response) {
-            if (isset($response->ActivityType)) {
-                $this->ActivityType = $response->ActivityType;
+        if (null !== $attributes) {
+            if (isset($attributes->ActivityType)) {
+                $this->setActivityType($attributes->ActivityType);
             }
-            if (isset($response->TrackingNumber)) {
-                $this->TrackingNumber = $response->TrackingNumber;
+            if (isset($attributes->TrackingNumber)) {
+                $this->setTrackingNumber($attributes->TrackingNumber);
             }
-            if (isset($response->ShipperNumber)) {
-                $this->ShipperNumber = $response->ShipperNumber;
+            if (isset($attributes->ShipperNumber)) {
+                $this->setShipperNumber($attributes->ShipperNumber);
             }
-            if (isset($response->ShipmentReferenceNumber)) {
-                if (is_array($response->ShipmentReferenceNumber)) {
-                    foreach ($response->ShipmentReferenceNumber as $ShipmentReferenceNumber) {
-                        $this->ShipmentReferenceNumber[] = new ShipmentReferenceNumber($ShipmentReferenceNumber);
+            if (isset($attributes->PackageReferenceNumber)) {
+                $PackageReferenceNumber = $this->getPackageReferenceNumber();
+                if (is_array($attributes->PackageReferenceNumber)) {
+                    foreach ($attributes->PackageReferenceNumber as $PkgReferenceNumber) {
+                        $PackageReferenceNumber[] = new PackageReferenceNumber($PkgReferenceNumber);
                     }
                 } else {
-                    $this->ShipmentReferenceNumber[] = new ShipmentReferenceNumber($response->ShipmentReferenceNumber);
+                    $PackageReferenceNumber[] = new PackageReferenceNumber($attributes->PackageReferenceNumber);
                 }
+                $this->setPackageReferenceNumber($PackageReferenceNumber);
             }
-            if (isset($response->PackageReferenceNumber)) {
-                if (is_array($response->PackageReferenceNumber)) {
-                    foreach ($response->PackageReferenceNumber as $PackageReferenceNumber) {
-                        $this->PackageReferenceNumber[] = new PackageReferenceNumber($PackageReferenceNumber);
+            if (isset($attributes->ShipmentReferenceNumber)) {
+                $ShipmentReferenceNumber = $this->getShipmentReferenceNumber();
+                if (is_array($attributes->ShipmentReferenceNumber)) {
+                    foreach ($attributes->ShipmentReferenceNumber as $ShpReferenceNumber) {
+                        $ShipmentReferenceNumber[] = new ShipmentReferenceNumber($ShpReferenceNumber);
                     }
                 } else {
-                    $this->PackageReferenceNumber[] = new PackageReferenceNumber($response->PackageReferenceNumber);
+                    $ShipmentReferenceNumber[] = new ShipmentReferenceNumber($attributes->ShipmentReferenceNumber);
                 }
+                $this->setShipmentReferenceNumber($ShipmentReferenceNumber);
             }
-            if (isset($response->Service)) {
-                $this->Service->Code = $response->Service->Code;
+            if (isset($attributes->Service)) {
+                $this->setService(new Service($attributes->Service));
             }
-            if (isset($response->Activity)) {
-                $this->Activity = new Activity($response->Activity);
+            if (isset($attributes->Activity)) {
+                $this->setActivity(new Activity($attributes->Activity));
             }
-            if (isset($response->BillToAccount)) {
-                $this->BillToAccount = new BillToAccount($response->BillToAccount);
+            if (isset($attributes->BillToAccount)) {
+                $this->setBillToAccount(new BillToAccount($attributes->BillToAccount));
             }
-            if (isset($response->ShipTo)) {
-                $this->ShipTo = new ShipTo($response->ShipTo);
+            if (isset($attributes->ShipTo)) {
+                $this->setShipTo(new ShipTo($attributes->ShipTo));
             }
-            if (isset($response->RescheduledDeliveryDate)) {
-                $this->RescheduledDeliveryDate = $response->RescheduledDeliveryDate;
+            if (isset($attributes->RescheduledDeliveryDate)) {
+                $this->setRescheduledDeliveryDate($attributes->RescheduledDeliveryDate);
             }
-            if (isset($response->FailureNotification)) {
-                $this->FailureNotification = new FailureNotification($response->FailureNotification);
+            if (isset($attributes->FailureNotification)) {
+                $this->setFailureNotification(new FailureNotification($attributes->FailureNotification));
             }
-            if (isset($response->Bookmark)) {
-                $this->Bookmark = $response->Bookmark;
+            if (isset($attributes->Bookmark)) {
+                $this->setBookmark($attributes->Bookmark);
             }
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('Generic');
+        if (count($this->getPackageReferenceNumber()) > 0) {
+            foreach ($this->getPackageReferenceNumber() as $PackageReferenceNumber) {
+                $node->appendChild($PackageReferenceNumber->toNode($document));
+            }
+        }
+        if (count($this->getShipmentReferenceNumber()) > 0) {
+            foreach ($this->getShipmentReferenceNumber() as $ShipmentReferenceNumber) {
+                $node->appendChild($ShipmentReferenceNumber->toNode($document));
+            }
+        }
+        $node->appendChild($document->createElement('ActivityType', $this->getActivityType()));
+        $node->appendChild($document->createElement('TrackingNumber', $this->getTrackingNumber()));
+        $node->appendChild($document->createElement('ShipperNumber', $this->getShipperNumber()));
+        $node->appendChild($this->getService()->toNode($document));
+        $node->appendChild($this->getActivity()->toNode($document));
+        $node->appendChild($this->getBillToAccount()->toNode($document));
+        $node->appendChild($this->getShipTo()->toNode($document));
+        $node->appendChild($document->createElement('RescheduledDeliveryDate', $this->getRescheduledDeliveryDate()));
+        $node->appendChild($this->getFailureNotification()->toNode($document));
+        $node->appendChild($document->createElement('Bookmark', $this->getBookmark()));
+        return $node;
+    }
+
+    /**
+     * @param \Ups\entity\Activity $activity
+     * @return $this
+     */
+    public function setActivity($activity)
+    {
+        $this->activity = $activity;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\entity\Activity
+     */
+    public function getActivity()
+    {
+        return $this->activity;
+    }
+
+    /**
+     * @param string $activityType
+     * @return $this
+     */
+    public function setActivityType($activityType)
+    {
+        $this->activityType = $activityType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivityType()
+    {
+        return $this->activityType;
+    }
+
+    /**
+     * @param \Ups\Entity\BillToAccount $billToAccount
+     * @return $this
+     */
+    public function setBillToAccount($billToAccount)
+    {
+        $this->billToAccount = $billToAccount;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\BillToAccount
+     */
+    public function getBillToAccount()
+    {
+        return $this->billToAccount;
+    }
+
+    /**
+     * @param string $bookmark
+     * @return $this
+     */
+    public function setBookmark($bookmark)
+    {
+        $this->bookmark = $bookmark;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBookmark()
+    {
+        return $this->bookmark;
+    }
+
+    /**
+     * @param \Ups\Entity\FailureNotification $failureNotification
+     * @return $this
+     */
+    public function setFailureNotification($failureNotification)
+    {
+        $this->failureNotification = $failureNotification;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\FailureNotification
+     */
+    public function getFailureNotification()
+    {
+        return $this->failureNotification;
+    }
+
+    /**
+     * @param array $packageReferenceNumber
+     * @return $this
+     */
+    public function setPackageReferenceNumber($packageReferenceNumber)
+    {
+        $this->packageReferenceNumber = $packageReferenceNumber;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPackageReferenceNumber()
+    {
+        return $this->packageReferenceNumber;
+    }
+
+    /**
+     * @param string $rescheduledDeliveryDate
+     * @return $this
+     */
+    public function setRescheduledDeliveryDate($rescheduledDeliveryDate)
+    {
+        $this->rescheduledDeliveryDate = $rescheduledDeliveryDate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRescheduledDeliveryDate()
+    {
+        return $this->rescheduledDeliveryDate;
+    }
+
+    /**
+     * @param \Ups\Entity\Service $service
+     * @return $this
+     */
+    public function setService($service)
+    {
+        $this->service = $service;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\Service
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    /**
+     * @param \Ups\Entity\ShipTo $shipTo
+     * @return $this
+     */
+    public function setShipTo($shipTo)
+    {
+        $this->shipTo = $shipTo;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\ShipTo
+     */
+    public function getShipTo()
+    {
+        return $this->shipTo;
+    }
+
+    /**
+     * @param array $shipmentReferenceNumber
+     * @return $this
+     */
+    public function setShipmentReferenceNumber($shipmentReferenceNumber)
+    {
+        $this->shipmentReferenceNumber = $shipmentReferenceNumber;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShipmentReferenceNumber()
+    {
+        return $this->shipmentReferenceNumber;
+    }
+
+    /**
+     * @param string $shipperNumber
+     * @return $this
+     */
+    public function setShipperNumber($shipperNumber)
+    {
+        $this->shipperNumber = $shipperNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getshipperNumber()
+    {
+        return $this->shipperNumber;
+    }
+
+    /**
+     * @param string $trackingNumber
+     * @return $this
+     */
+    public function setTrackingNumber($trackingNumber)
+    {
+        $this->trackingNumber = $trackingNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackingNumber()
+    {
+        return $this->trackingNumber;
+    }
+
 }

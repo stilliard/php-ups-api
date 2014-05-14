@@ -1,8 +1,8 @@
 <?php
 date_default_timezone_set('America/New_York');
 
+/*
 $vendor = realpath(__DIR__ . '/../vendor');
-
 if (file_exists($vendor . "/autoload.php")) {
     require $vendor . "/autoload.php";
 } else {
@@ -13,7 +13,7 @@ if (file_exists($vendor . "/autoload.php")) {
         throw new Exception("Unable to load dependencies");
     }
 }
-
+*/
 spl_autoload_register(function ($class) {
     $class = ltrim($class, '\\');
     $prefix = 'Ups\\Tests';

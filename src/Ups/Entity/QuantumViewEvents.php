@@ -1,28 +1,98 @@
 <?php
 namespace Ups\Entity;
 
-class QuantumViewEvents
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class QuantumViewEvents implements NodeInterface
 {
-    public $SubscriberID;
-    public $SubscriptionEvents;
+    /**
+     * @var string
+     */
+    private $subscriberID;
 
-    function __construct($response = null)
+    /**
+     * @var array
+     */
+    private $subscriptionEvents;
+
+    function __construct($attributes = null)
     {
-        $this->SubscriptionEvents = array();
+        $this->setSubscriptionEvents(array());
 
-        if (null != $response) {
-            if (isset($response->SubscriberID)) {
-                $this->SubscriberID = new $response->SubscriberID;
+        if (null !== $attributes) {
+            if (isset($attributes->SubscriberID)) {
+                $this->setSubscriberID($attributes->SubscriberID);
             }
         }
-        if (isset($response->SubscriptionEvents)) {
-            if (is_array($response->SubscriptionEvents)) {
-                foreach ($response->SubscriptionEvents as $SubscriptionEvents) {
-                    $this->SubscriptionEvents[] = new SubscriptionEvents($SubscriptionEvents);
+        if (isset($attributes->SubscriptionEvents)) {
+            $subscriptionEvents = $this->getSubscriptionEvents();
+            if (is_array($attributes->SubscriptionEvents)) {
+                foreach ($attributes->SubscriptionEvents as $item) {
+                    $subscriptionEvents[] = new SubscriptionEvents($item);
                 }
             } else {
-                $this->SubscriptionEvents[] = new SubscriptionEvents($response->SubscriptionEvents);
+                $subscriptionEvents[] = new SubscriptionEvents($attributes->SubscriptionEvents);
             }
+            $this->setSubscriptionEvents($subscriptionEvents);
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('QuantumViewEvents');
+        $node->appendChild($document->createElement('SubscriberID', $this->getSubscriberID()));
+        if (count($this->getSubscriptionEvents()) > 0) {
+            foreach ($this->getSubscriptionEvents() as $SubscriptionEvents) {
+                $node->appendChild($SubscriptionEvents->toNode($document));
+            }
+        }
+        return $node;
+    }
+
+    /**
+     * @param string $subscriberID
+     * @return $this
+     */
+    public function setSubscriberID($subscriberID)
+    {
+        $this->subscriberID = $subscriberID;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubscriberID()
+    {
+        return $this->subscriberID;
+    }
+
+    /**
+     * @param array $subscriptionEvents
+     * @return $this
+     */
+    public function setSubscriptionEvents($subscriptionEvents)
+    {
+        $this->subscriptionEvents = $subscriptionEvents;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubscriptionEvents()
+    {
+        return $this->subscriptionEvents;
+    }
+
 }

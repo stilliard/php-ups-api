@@ -1,70 +1,332 @@
 <?php
 namespace Ups\Entity;
 
-class Origin
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class Origin implements NodeInterface
 {
-    public $PackageReferenceNumber;
-    public $ShipmentReferenceNumber;
-    public $ShipperNumber;
-    public $TrackingNumber;
-    public $Date;
-    public $Time;
-    public $ActivityLocation;
-    public $BillToAccount;
-    public $ScheduledDeliveryDate;
-    public $ScheduledDeliveryTime;
+    /**
+     * @var array
+     */
+    private $packageReferenceNumber;
 
-    function __construct($response = null)
+    /**
+     * @var array
+     */
+    private $shipmentReferenceNumber;
+
+    /**
+     * @var string
+     */
+    private $shipperNumber;
+
+    /**
+     * @var string
+     */
+    private $trackingNumber;
+
+    /**
+     * @var string
+     */
+    private $date;
+
+    /**
+     * @var string
+     */
+    private $time;
+
+    /**
+     * @var \Ups\Entity\ActivityLocation
+     */
+    private $activityLocation;
+
+    /**
+     * @var \Ups\Entity\BillToAccount
+     */
+    private $billToAccount;
+
+    /**
+     * @var string
+     */
+    private $scheduledDeliveryDate;
+
+    /**
+     * @var string
+     */
+    private $scheduledDeliveryTime;
+
+    function __construct($attributes = null)
     {
-        $this->PackageReferenceNumber = new PackageReferenceNumber();
-        $this->ShipmentReferenceNumber = new ShipmentReferenceNumber();
-        $this->ActivityLocation = new ActivityLocation();
-        $this->BillToAccount = new BillToAccount();
+        $this->setPackageReferenceNumber(new PackageReferenceNumber());
+        $this->setShipmentReferenceNumber(new ShipmentReferenceNumber());
+        $this->setActivityLocation(new ActivityLocation());
+        $this->setBillToAccount(new BillToAccount());
 
-        if (null != $response) {
-            if (isset($response->PackageReferenceNumber)) {
-                if (is_array($response->PackageReferenceNumber)) {
-                    foreach ($response->PackageReferenceNumber as $PackageReferenceNumber) {
-                        $this->PackageReferenceNumber[] = new PackageReferenceNumber($PackageReferenceNumber);
+        if (null !== $attributes) {
+            if (isset($attributes->PackageReferenceNumber)) {
+                $PackageReferenceNumber = $this->getPackageReferenceNumber();
+                if (is_array($attributes->PackageReferenceNumber)) {
+                    foreach ($attributes->PackageReferenceNumber as $PkgReferenceNumber) {
+                        $PackageReferenceNumber[] = new PackageReferenceNumber($PkgReferenceNumber);
                     }
                 } else {
-                    $this->PackageReferenceNumber[] = new PackageReferenceNumber($response->PackageReferenceNumber);
+                    $PackageReferenceNumber[] = new PackageReferenceNumber($attributes->PackageReferenceNumber);
                 }
+                $this->setPackageReferenceNumber($PackageReferenceNumber);
             }
-            if (isset($response->ShipmentReferenceNumber)) {
-                if (is_array($response->ShipmentReferenceNumber)) {
-                    foreach ($response->ShipmentReferenceNumber as $ShipmentReferenceNumber) {
-                        $this->ShipmentReferenceNumber[] = new ShipmentReferenceNumber($ShipmentReferenceNumber);
+            if (isset($attributes->ShipmentReferenceNumber)) {
+                $ShipmentReferenceNumber = $this->getShipmentReferenceNumber();
+                if (is_array($attributes->ShipmentReferenceNumber)) {
+                    foreach ($attributes->ShipmentReferenceNumber as $ShpReferenceNumber) {
+                        $ShipmentReferenceNumber[] = new ShipmentReferenceNumber($ShpReferenceNumber);
                     }
                 } else {
-                    $this->ShipmentReferenceNumber[] = new ShipmentReferenceNumber($response->ShipmentReferenceNumber);
+                    $ShipmentReferenceNumber[] = new ShipmentReferenceNumber($attributes->ShipmentReferenceNumber);
                 }
+                $this->setShipmentReferenceNumber($ShipmentReferenceNumber);
             }
-            if (isset($response->ShipperNumber)) {
-                $this->ShipperNumber = $response->ShipperNumber;
+            if (isset($attributes->ShipperNumber)) {
+                $this->setShipperNumber($attributes->ShipperNumber);
             }
-            if (isset($response->TrackingNumber)) {
-                $this->TrackingNumber = $response->TrackingNumber;
+            if (isset($attributes->TrackingNumber)) {
+                $this->setTrackingNumber($attributes->TrackingNumber);
             }
-            if (isset($response->Date)) {
-                $this->Date = $response->Date;
+            if (isset($attributes->Date)) {
+                $this->setDate($attributes->Date);
             }
-            if (isset($response->Time)) {
-                $this->Time = $response->Time;
+            if (isset($attributes->Time)) {
+                $this->setTime($attributes->Time);
             }
-            if (isset($response->ActivityLocation)) {
-                $this->ActivityLocation = new ActivityLocation($response->ActivityLocation);
+            if (isset($attributes->ActivityLocation)) {
+                $this->setActivityLocation(new ActivityLocation($attributes->ActivityLocation));
             }
-            if (isset($response->BillToAccount)) {
-                $this->BillToAccount = new BillToAccount($response->BillToAccount);
+            if (isset($attributes->BillToAccount)) {
+                $this->setBillToAccount(new BillToAccount($attributes->BillToAccount));
             }
-            if (isset($response->ScheduledDeliveryDate)) {
-                $this->ScheduledDeliveryDate = $response->ScheduledDeliveryDate;
+            if (isset($attributes->ScheduledDeliveryDate)) {
+                $this->setScheduledDeliveryDate($attributes->ScheduledDeliveryDate);
             }
-            if (isset($response->ScheduledDeliveryTime)) {
-                $this->ScheduledDeliveryTime = $response->ScheduledDeliveryTime;
+            if (isset($attributes->ScheduledDeliveryTime)) {
+                $this->setScheduledDeliveryTime($attributes->ScheduledDeliveryTime);
             }
 
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('Origin');
+        if (count($this->getPackageReferenceNumber()) > 0) {
+            foreach ($this->getPackageReferenceNumber() as $PackageReferenceNumber) {
+                $node->appendChild($PackageReferenceNumber->toNode($document));
+            }
+        }
+        if (count($this->getShipmentReferenceNumber()) > 0) {
+            foreach ($this->getShipmentReferenceNumber() as $ShipmentReferenceNumber) {
+                $node->appendChild($ShipmentReferenceNumber->toNode($document));
+            }
+        }
+        $node->appendChild($document->createElement('TrackingNumber', $this->getTrackingNumber()));
+        $node->appendChild($document->createElement('ShipperNumber', $this->getShipperNumber()));
+        $node->appendChild($document->createElement('Date', $this->getDate()));
+        $node->appendChild($document->createElement('Time', $this->getTime()));
+        $node->appendChild($this->getActivityLocation()->toNode($document));
+        $node->appendChild($this->getBillToAccount()->toNode($document));
+        $node->appendChild($document->createElement('ScheduledDeliveryDate', $this->getScheduledDeliveryDate()));
+        $node->appendChild($document->createElement('ScheduledDeliveryTime', $this->getScheduledDeliveryTime()));
+
+        return $node;
+    }
+
+    /**
+     * @param \Ups\Entity\ActivityLocation $activityLocation
+     * @return $this
+     */
+    public function setActivityLocation($activityLocation)
+    {
+        $this->activityLocation = $activityLocation;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\ActivityLocation
+     */
+    public function getActivityLocation()
+    {
+        return $this->activityLocation;
+    }
+
+    /**
+     * @param \Ups\Entity\BillToAccount $billToAccount
+     * @return $this
+     */
+    public function setBillToAccount($billToAccount)
+    {
+        $this->billToAccount = $billToAccount;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\BillToAccount
+     */
+    public function getBillToAccount()
+    {
+        return $this->billToAccount;
+    }
+
+    /**
+     * @param string $date
+     * @return $this
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param array $packageReferenceNumber
+     * @return $this
+     */
+    public function setPackageReferenceNumber($packageReferenceNumber)
+    {
+        $this->packageReferenceNumber = $packageReferenceNumber;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPackageReferenceNumber()
+    {
+        return $this->packageReferenceNumber;
+    }
+
+    /**
+     * @param string $scheduledDeliveryDate
+     * @return $this
+     */
+    public function setScheduledDeliveryDate($scheduledDeliveryDate)
+    {
+        $this->scheduledDeliveryDate = $scheduledDeliveryDate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduledDeliveryDate()
+    {
+        return $this->scheduledDeliveryDate;
+    }
+
+    /**
+     * @param string $scheduledDeliveryTime
+     * @return $this
+     */
+    public function setScheduledDeliveryTime($scheduledDeliveryTime)
+    {
+        $this->scheduledDeliveryTime = $scheduledDeliveryTime;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduledDeliveryTime()
+    {
+        return $this->scheduledDeliveryTime;
+    }
+
+    /**
+     * @param array $shipmentReferenceNumber
+     * @return $this
+     */
+    public function setShipmentReferenceNumber($shipmentReferenceNumber)
+    {
+        $this->shipmentReferenceNumber = $shipmentReferenceNumber;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShipmentReferenceNumber()
+    {
+        return $this->shipmentReferenceNumber;
+    }
+
+    /**
+     * @param string $shipperNumber
+     * @return $this
+     */
+    public function setShipperNumber($shipperNumber)
+    {
+        $this->shipperNumber = $shipperNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShipperNumber()
+    {
+        return $this->shipperNumber;
+    }
+
+    /**
+     * @param string $time
+     * @return $this
+     */
+    public function setTime($time)
+    {
+        $this->time = $time;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTime()
+    {
+        return $this->time;
+    }
+
+    /**
+     * @param string $trackingNumber
+     * @return $this
+     */
+    public function setTrackingNumber($trackingNumber)
+    {
+        $this->trackingNumber = $trackingNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackingNumber()
+    {
+        return $this->trackingNumber;
+    }
+
+
 }

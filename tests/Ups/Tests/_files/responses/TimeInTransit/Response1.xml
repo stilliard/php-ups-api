@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<TimeInTransitResponse>
+    <Response>
+        <ResponseStatusCode>1</ResponseStatusCode>
+        <ResponseStatusDescription>Success</ResponseStatusDescription>
+    </Response>
+    <TransitResponse>
+        <PickupDate>2001-06-08</PickupDate> <TransitFrom>
+        <AddressArtifactFormat> <PoliticalDivision2>LONDON</PoliticalDivision2> <PoliticalDivision1>CITY OF LONDON</PoliticalDivision1> <Country>UNITED KINGDOM</Country> <CountryCode>GB</CountryCode> <PostcodePrimaryLow>EC03</PostcodePrimaryLow>
+        </AddressArtifactFormat> </TransitFrom>
+        <TransitTo> <AddressArtifactFormat>
+            <PoliticalDivision2>NASSAU</PoliticalDivision2> <Country>BAHAMAS</Country> <CountryCode>BS</CountryCode>
+        </AddressArtifactFormat> </TransitTo>
+        <AutoDutyCode>02</AutoDutyCode> <ShipmentWeight>
+        <UnitOfMeasurement> <Code>KGS</Code>
+        </UnitOfMeasurement>
+        <Weight>23.0</Weight> </ShipmentWeight> <InvoiceLineTotal>
+        <CurrencyCode>USD</CurrencyCode>
+        <MonetaryValue>250.00</MonetaryValue>
+    </InvoiceLineTotal>
+        <Disclaimer>Services listed as guaranteed are backed by a money-back guarantee for
+            transportation charges only. See Terms and Conditions in the Service Guide for details. Certain commoditites and high value shipments may require additional transit time for customs clearance.</Disclaimer>
+        <ServiceSummary>
+            <Service>
+                <Code>01</Code>
+                <Description>UPS Worldwide Express</Description> </Service>
+            <Guaranteed> <Code>Y</Code>
+            </Guaranteed> <EstimatedArrival>
+            <BusinessTransitDays>1</BusinessTransitDays> <Time>23:30:00</Time> <PickupDate>2001-06-08</PickupDate> <PickupTime>19:00:00</PickupTime> <HolidayCount>0</HolidayCount> <DelayCount>0</DelayCount>
+            <Date>2001-06-11</Date> <DayOfWeek>MON</DayOfWeek> <TotalTransitDays>2</TotalTransitDays> <CustomerCenterCutoff>18:30:00</CustomerCenterCutoff> <RestDays>1</RestDays>
+        </EstimatedArrival> </ServiceSummary> <ServiceSummary>
+        <Service>
+            <Code>09</Code>
+            <Description>UPS Worldwide Express</Description>
+        </Service> <Guaranteed>
+        <Code>Y</Code> </Guaranteed>
+        <EstimatedArrival> <BusinessTransitDays>1</BusinessTransitDays> <Time>23:30:00</Time> <PickupDate>2001-06-11</PickupDate> <PickupTime>16:00:00</PickupTime> <HolidayCount>0</HolidayCount> <DelayCount>0</DelayCount>
+            <Date>2001-06-12</Date> <DayOfWeek>TUE</DayOfWeek> <TotalTransitDays>1</TotalTransitDays> <CustomerCenterCutoff>15:00:00</CustomerCenterCutoff> <RestDays>0</RestDays>
+        </EstimatedArrival> </ServiceSummary>
+    </TransitResponse>
+</TimeInTransitResponse>

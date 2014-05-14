@@ -1,27 +1,86 @@
 <?php
 namespace Ups\Entity;
 
-class ShipmentWeight
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class ShipmentWeight implements NodeInterface
 {
     /**
-     * @var UnitOfMeasurement
+     * @var \Ups\Entity\UnitOfMeasurement
      */
-    public $UnitOfMeasurement;
+    private $unitOfMeasurement;
 
-    public $Weight;
+    /**
+     * @var string
+     */
+    private $weight;
 
-    function __construct($response = null)
+    function __construct($attributes = null)
     {
-        $this->UnitOfMeasurement = new UnitOfMeasurement();
+        $this->setUnitOfMeasurement(new UnitOfMeasurement());
 
-        if (null != $response) {
-            if (isset($response->UnitOfMeasurement)) {
-                $this->UnitOfMeasurement = new UnitOfMeasurement($response->UnitOfMeasurement);
+        if (null !== $attributes) {
+            if (isset($attributes->UnitOfMeasurement)) {
+                $this->setUnitOfMeasurement(new UnitOfMeasurement($attributes->UnitOfMeasurement));
             }
-            if (isset($response->Weight)) {
-                $this->Weight = $response->Weight;
+            if (isset($attributes->Weight)) {
+                $this->setWeight($attributes->Weight);
             }
         }
+    }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('ShipmentWeight');
+        $node->appendChild($this->getUnitOfMeasurement()->toNode($document));
+        $node->appendChild($document->createElement('Weight', $this->getWeight()));
+        return $node;
+    }
+
+    /**
+     * @param \Ups\Entity\UnitOfMeasurement $unitOfMeasurement
+     * @return $this
+     */
+    public function setUnitOfMeasurement($unitOfMeasurement)
+    {
+        $this->unitOfMeasurement = $unitOfMeasurement;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\UnitOfMeasurement
+     */
+    public function getUnitOfMeasurement()
+    {
+        return $this->unitOfMeasurement;
+    }
+
+    /**
+     * @param string $weight
+     * @return $this
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWeight()
+    {
+        return $this->weight;
     }
 
 }

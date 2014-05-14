@@ -1,63 +1,317 @@
 <?php
 namespace Ups\Entity;
 
-class Package
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class Package implements NodeInterface
 {
     const PKG_OVERSIZE1 = '1';
     const PKG_OVERSIZE2 = '2';
     const PKG_LARGE = '4';
 
-    public $PackagingType;
-    public $PackageWeight;
-    public $Description;
-    public $PackageServiceOptions;
-    public $UPSPremiumCareIndicator;
-    public $ReferenceNumber;
-    public $TrackingNumber;
-    public $LargePackage;
-    public $Dimensions;
-    public $Activity;
+    /**
+     * @var \Ups\Entity\PackagingType
+     */
+    private $packagingType;
 
-    function __construct($response = null)
+    /**
+     * @var \Ups\Entity\PackageWeight
+     */
+    private $packageWeight;
+
+    /**
+     * @var string
+     */
+    private $description;
+
+    /**
+     * @var \Ups\Entity\PackageServiceOptions
+     */
+    private $packageServiceOptions;
+
+    /**
+     * @var string
+     */
+    private $UpsPremiumCareIndicator;
+
+    /**
+     * @var \Ups\Entity\ReferenceNumber
+     */
+    private $referenceNumber;
+
+    /**
+     * @var string
+     */
+    private $trackingNumber;
+
+    /**
+     * @var string
+     */
+    private $largePackage;
+
+    /**
+     * @var \Ups\Entity\Dimensions
+     */
+    private $dimensions;
+
+    /**
+     * @var array
+     */
+    private $activity;
+
+    function __construct($attributes = null)
     {
-        $this->ReferenceNumber = new ReferenceNumber();
-        $this->Dimensions = new Dimensions();
-        $this->Activity = new Activity();
+        $this->setReferenceNumber(new ReferenceNumber());
+        $this->Dimensions(new Dimensions());
+        $this->Activity(new Activity());
 
-        if (null != $response) {
-            if (isset($response->PackageWeight)) {
-                $this->PackageWeight = new PackageWeight($response->PackageWeight);
+        if (null !== $attributes) {
+            if (isset($attributes->PackageWeight)) {
+                $this->setPackageWeight(new PackageWeight($attributes->PackageWeight));
             }
-            if (isset($response->Description)) {
-                $this->Description = $response->Description;
+            if (isset($attributes->Description)) {
+                $this->setDescription($attributes->Description);
             }
-            if (isset($response->PackageServiceOptions)) {
-                $this->PackageServiceOptions = new PackageServiceOptions($response->PackageServiceOptions);
+            if (isset($attributes->PackageServiceOptions)) {
+                $this->setPackageServiceOptions(new PackageServiceOptions($attributes->PackageServiceOptions));
             }
-            if (isset($response->UPSPremiumCareIndicator)) {
-                $this->UPSPremiumCareIndicator = $response->UPSPremiumCareIndicator;
+            if (isset($attributes->UPSPremiumCareIndicator)) {
+                $this->setUpsPremiumCareIndicator($attributes->UPSPremiumCareIndicator);
             }
-            if (isset($response->ReferenceNumber)) {
-                $this->ReferenceNumber = new ReferenceNumber($response->ReferenceNumber);
+            if (isset($attributes->ReferenceNumber)) {
+                $this->setReferenceNumber(new ReferenceNumber($attributes->ReferenceNumber));
             }
-            if (isset($response->TrackingNumber)) {
-                $this->TrackingNumber = $response->TrackingNumber;
+            if (isset($attributes->TrackingNumber)) {
+                $this->setTrackingNumber($attributes->TrackingNumber);
             }
-            if (isset($response->LargePackage)) {
-                $this->LargePackage = $response->LargePackage;
+            if (isset($attributes->LargePackage)) {
+                $this->setLargePackage($attributes->LargePackage);
             }
-            if (isset($response->Dimensions)) {
-                $this->Dimensions = new Dimensions($response->Dimensions);
+            if (isset($attributes->Dimensions)) {
+                $this->setDimensions(new Dimensions($attributes->Dimensions));
             }
-            if (isset($response->Activity)) {
-                if (is_array($response->Activity)) {
-                    foreach ($response->Activity as $Activity) {
-                        $this->Activity[] = new Activity($Activity);
+            if (isset($attributes->Activity)) {
+                $activity = $this->getActivity();
+                if (is_array($attributes->Activity)) {
+                    foreach ($attributes->Activity as $item) {
+                        $activity[] = new Activity($item);
                     }
                 } else {
-                    $this->Activity[] = new Activity($response->Activity);
+                    $activity[] = new Activity($attributes->Activity);
                 }
+                $this->setActivity($activity);
             }
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('Package');
+        $node->appendChild($this->getPackagingType()->toNode($document));
+        $node->appendChild($this->getPackageWeight()->toNode($document));
+        $node->appendChild($document->createElement('Description', $this->getDescription()));
+        $node->appendChild($this->getPackageServiceOptions()->toNode($document));
+        $node->appendChild($document->createElement('UPSPremiumCareIndicator', $this->getUpsPremiumCareIndicator()));
+        $node->appendChild($this->getReferenceNumber()->toNode($document));
+        $node->appendChild($document->createElement('TrackingNumber', $this->getTrackingNumber()));
+        $node->appendChild($document->createElement('LargePackage', $this->getLargePackage()));
+        $node->appendChild($this->getDimensions()->toNode($document));
+        if (count($this->getActivity()) > 0) {
+            foreach ($this->getActivity() as $Activity) {
+                $node->appendChild($Activity->toNode($document));
+            }
+        }
+        return $node;
+    }
+
+    /**
+     * @param string $UpsPremiumCareIndicator
+     * @return $this
+     */
+    public function setUpsPremiumCareIndicator($UpsPremiumCareIndicator)
+    {
+        $this->UpsPremiumCareIndicator = $UpsPremiumCareIndicator;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpsPremiumCareIndicator()
+    {
+        return $this->UpsPremiumCareIndicator;
+    }
+
+    /**
+     * @param array $activity
+     * @return $this
+     */
+    public function setActivity($activity)
+    {
+        $this->activity = $activity;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getActivity()
+    {
+        return $this->activity;
+    }
+
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param \Ups\Entity\Dimensions $dimensions
+     * @return $this
+     */
+    public function setDimensions($dimensions)
+    {
+        $this->dimensions = $dimensions;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\Dimensions
+     */
+    public function getDimensions()
+    {
+        return $this->dimensions;
+    }
+
+    /**
+     * @param string $largePackage
+     * @return $this
+     */
+    public function setLargePackage($largePackage)
+    {
+        $this->largePackage = $largePackage;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLargePackage()
+    {
+        return $this->largePackage;
+    }
+
+    /**
+     * @param \Ups\Entity\PackageServiceOptions $packageServiceOptions
+     * @return $this
+     */
+    public function setPackageServiceOptions($packageServiceOptions)
+    {
+        $this->packageServiceOptions = $packageServiceOptions;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\PackageServiceOptions
+     */
+    public function getPackageServiceOptions()
+    {
+        return $this->packageServiceOptions;
+    }
+
+    /**
+     * @param \Ups\Entity\PackageWeight $packageWeight
+     * @return $this
+     */
+    public function setPackageWeight($packageWeight)
+    {
+        $this->packageWeight = $packageWeight;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\PackageWeight
+     */
+    public function getPackageWeight()
+    {
+        return $this->packageWeight;
+    }
+
+    /**
+     * @param \Ups\Entity\PackagingType $packagingType
+     */
+    public function setPackagingType($packagingType)
+    {
+        $this->packagingType = $packagingType;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\PackagingType
+     */
+    public function getPackagingType()
+    {
+        return $this->packagingType;
+    }
+
+    /**
+     * @param  \Ups\Entity\ReferenceNumber $referenceNumber
+     * @return $this
+     */
+    public function setReferenceNumber($referenceNumber)
+    {
+        $this->referenceNumber = $referenceNumber;
+        return $this;
+    }
+
+    /**
+     * @return  \Ups\Entity\ReferenceNumber
+     */
+    public function getReferenceNumber()
+    {
+        return $this->referenceNumber;
+    }
+
+    /**
+     * @param string $trackingNumber
+     * @return $this
+     */
+    public function setTrackingNumber($trackingNumber)
+    {
+        $this->trackingNumber = $trackingNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackingNumber()
+    {
+        return $this->trackingNumber;
+    }
+
+
 }

@@ -1,7 +1,11 @@
 <?php
 namespace Ups\Entity;
 
-class Service
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class Service implements NodeInterface
 {
     // Valid domestic values
     const S_AIR_1DAYEARLYAM = '14';
@@ -27,28 +31,81 @@ class Service
     const S_UPSTODAY_EXPRESSSAVER = '86';
     const S_UPSWW_EXPRESSFREIGHT = '96';
 
-    public $Code;
-    public $Description;
+    /**
+     * @var string
+     */
+    private $code;
 
-    function __construct($response = null)
+    /**
+     * @var string
+     */
+    private $description;
+
+    function __construct($attributes = null)
     {
-        $this->Code = self::S_GROUND;
+        $this->setCode(self::S_GROUND);
 
-        if (null != $response) {
-            if (isset($response->Code)) {
-                $this->Code = $response->Code;
+        if (null !== $attributes) {
+            if (isset($attributes->Code)) {
+                $this->setCode($attributes->Code);
             }
 
-            if (isset($response->Description)) {
-                $this->Description = $response->Description;
+            if (isset($attributes->Description)) {
+                $this->setDescription($attributes->Description);
             }
+        }
+    }
 
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
         }
 
+        $node = $document->createElement('Service');
+        $node->appendChild($document->createElement('Code', $this->getCode()));
+        $node->appendChild($document->createElement('Description', $this->getDescription()));
+        return $node;
     }
 
-    public function getName()
+    /**
+     * @param string $code
+     * @return $this
+     */
+    public function setCode($code)
     {
-        return 'shipping.service.code' . $this->Code;
+        $this->code = $code;
+        return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
 }

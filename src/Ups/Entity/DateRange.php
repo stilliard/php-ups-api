@@ -1,20 +1,84 @@
 <?php
 namespace Ups\Entity;
 
-class DateRange
-{
-    public $BeginDate;
-    public $EndDate;
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
 
-    function __construct($response = null)
+class DateRange implements NodeInterface
+{
+    /**
+     * @var string
+     */
+    private $beginDate;
+
+    /**
+     * @var string
+     */
+    private $endDate;
+
+    function __construct($attributes = null)
     {
-        if (null != $response) {
-            if (isset($response->BeginDate)) {
-                $this->BeginDate = $response->BeginDate;
+        if (null !== $attributes) {
+            if (isset($attributes->BeginDate)) {
+                $this->setBeginDate($attributes->BeginDate);
             }
         }
-        if (isset($response->EndDate)) {
-            $this->EndDate = $response->EndDate;
+        if (isset($attributes->EndDate)) {
+            $this->setEndDate($attributes->EndDate);
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('DateRange');
+        $node->appendChild($document->createElement('BeginDate', $this->getBeginDate()));
+        $node->appendChild($document->createElement('EndDate', $this->getEndDate()));
+        return $node;
+    }
+
+    /**
+     * @param string $beginDate
+     * @return $this
+     */
+    public function setBeginDate($beginDate)
+    {
+        $this->beginDate = $beginDate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBeginDate()
+    {
+        return $this->beginDate;
+    }
+
+    /**
+     * @param string $endDate
+     * @return $this
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
 }

@@ -1,22 +1,86 @@
 <?php
 namespace Ups\Entity;
 
-class FailureNotification
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class FailureNotification implements NodeInterface
 {
-    public $FailedEmailAddress;
-    public $FailureNotificationCode;
+    /**
+     * @var string
+     */
+    private $failedEmailAddress;
 
-    function __construct($response = null)
+    /**
+     * @var \Ups\Entity\FailureNotificationCode
+     */
+    private $failureNotificationCode;
+
+    function __construct($attributes = null)
     {
-        $this->FailureNotificationCode = new FailureNotificationCode();
+        $this->setFailureNotificationCode(new FailureNotificationCode());
 
-        if (null != $response) {
-            if (isset($response->FailedEmailAddress)) {
-                $this->FailedEmailAddress = $response->FailedEmailAddress;
+        if (null !== $attributes) {
+            if (isset($attributes->FailedEmailAddress)) {
+                $this->setFailedEmailAddress($attributes->FailedEmailAddress);
             }
-            if (isset($response->FailureNotificationCode)) {
-                $this->FailureNotificationCode = new FailureNotificationCode($response->FailureNotificationCode);
+            if (isset($attributes->FailureNotificationCode)) {
+                $this->setFailureNotificationCode(new FailureNotificationCode($attributes->FailureNotificationCode));
             }
         }
     }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('FailureNotification');
+        $node->appendChild($document->createElement('FailedEmailAddress', $this->getFailedEmailAddress()));
+        $node->appendChild($this->getFailureNotificationCode()->toNode($document));
+        return $node;
+    }
+
+    /**
+     * @param string $failedEmailAddress
+     * @return $this
+     */
+    public function setFailedEmailAddress($failedEmailAddress)
+    {
+        $this->failedEmailAddress = $failedEmailAddress;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFailedEmailAddress()
+    {
+        return $this->failedEmailAddress;
+    }
+
+    /**
+     * @param \Ups\Entity\FailureNotificationCode $failureNotificationCode
+     * @return $this
+     */
+    public function setFailureNotificationCode($failureNotificationCode)
+    {
+        $this->failureNotificationCode = $failureNotificationCode;
+        return $this;
+    }
+
+    /**
+     * @return \Ups\Entity\FailureNotificationCode
+     */
+    public function getFailureNotificationCode()
+    {
+        return $this->failureNotificationCode;
+    }
+
 }

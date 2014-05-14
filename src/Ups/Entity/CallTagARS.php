@@ -1,7 +1,11 @@
 <?php
 namespace Ups\Entity;
 
-class CallTagARS
+use DOMDocument;
+use DOMNode;
+use Ups\NodeInterface;
+
+class CallTagARS implements NodeInterface
 {
     const CTA_NORETURN = '00';
     const CTA_CALLTAGSERVICE = '01';
@@ -12,18 +16,77 @@ class CallTagARS
     const CTA_ELECTRONICRETURNLABEL = '06';
     const CTA_RETURNSONTHEWEB = '08';
 
-    public $Number;
-    public $Code;
+    /**
+     * @var string
+     */
+    private $number;
 
-    function __construct($response = null)
+    /**
+     * @var string
+     */
+    private $code;
+
+    function __construct($attributes = null)
     {
-        if (null != $response) {
-            if (isset($response->Number)) {
-                $this->Number = $response->Number;
+        if (null !== $attributes) {
+            if (isset($attributes->Number)) {
+                $this->setNumber($attributes->Number);
             }
-            if (isset($response->Code)) {
-                $this->Code = $response->Code;
+            if (isset($attributes->Code)) {
+                $this->setCode($attributes->Code);
             }
         }
+    }
+
+    /**
+     * @param null|DOMDocument $document
+     * @return DOMNode
+     */
+    public function toNode(DOMDocument $document = null)
+    {
+        if (null === $document) {
+            $document = new DOMDocument();
+        }
+
+        $node = $document->createElement('CallTagARS');
+        $node->appendChild($document->createElement('Number', $this->getNumber()));
+        $node->appendChild($document->createElement('Code', $this->getCode()));
+        return $node;
+    }
+
+    /**
+     * @param string $Code
+     * @return $this
+     */
+    public function setCode($Code)
+    {
+        $this->code = $Code;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $Number
+     * @return $this
+     */
+    public function setNumber($Number)
+    {
+        $this->number = $Number;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumber()
+    {
+        return $this->number;
     }
 }

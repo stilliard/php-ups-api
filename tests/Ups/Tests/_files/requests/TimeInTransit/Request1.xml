@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<TimeInTransitRequest xml:lang='en-US'>
+    <Request>
+        <TransactionReference>
+            <CustomerContext>TNT_D Origin Country Code</CustomerContext>
+            <XpciVersion>1.0002</XpciVersion>
+        </TransactionReference>
+        <RequestAction>TimeInTransit</RequestAction>
+    </Request>
+    <TransitFrom>
+        <AddressArtifactFormat>
+            <PoliticalDivision2>LONDON</PoliticalDivision2>
+            <PoliticalDivision1>CITY OF LONDON</PoliticalDivision1>
+            <CountryCode>GB</CountryCode>
+            <PostcodePrimaryLow>EC03</PostcodePrimaryLow>
+        </AddressArtifactFormat>
+    </TransitFrom>
+    <TransitTo>
+            <AddressArtifactFormat>
+                <PoliticalDivision2>Nassau</PoliticalDivision2>
+                <CountryCode>BS</CountryCode>
+            </AddressArtifactFormat>
+    </TransitTo>
+    <ShipmentWeight>
+        <UnitOfMeasurement>
+            <Code>KGS</Code>
+            <Description>Kilograms</Description>
+        </UnitOfMeasurement>
+        <Weight>23</Weight>
+    </ShipmentWeight>
+    <TotalPackagesInShipment>123</TotalPackagesInShipment>
+    <InvoiceLineTotal>
+        <CurrencyCode>USD</CurrencyCode>
+        <MonetaryValue>250.00</MonetaryValue>
+    </InvoiceLineTotal>
+    <PickupDate>20140512</PickupDate>
+    <DocumentsOnlyIndicator />
+</TimeInTransitRequest>
