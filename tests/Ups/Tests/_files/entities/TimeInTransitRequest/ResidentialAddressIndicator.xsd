@@ -1,0 +1,1 @@
+<xsd:schema elementFormDefault="unqualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"            xmlns:ups="http://www.ups.com/XMLSchema">    <xsd:element name="ResidentialAddressIndicator">        <xsd:complexType>            <xsd:sequence/>        </xsd:complexType>    </xsd:element></xsd:schema>
