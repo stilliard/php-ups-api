@@ -1,0 +1,1 @@
+<xsd:schema elementFormDefault="unqualified" xmlns:ups="http://www.ups.com/XMLSchema"            xmlns:xsd="http://www.w3.org/2001/XMLSchema">    <xsd:element name="Code">        <xsd:complexType>            <xsd:sequence>                <xsd:element name="Code" type="xsd:string"/>            </xsd:sequence>        </xsd:complexType>    </xsd:element></xsd:schema>
