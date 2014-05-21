@@ -1,0 +1,24 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="Error">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ErrorSeverity" type="xsd:string"/>
+                <xsd:element name="ErrorCode" type="xsd:string"/>
+                <xsd:element name="ErrorDescription" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="MinimumRetrySeconds" type="xsd:string" minOccurs="0"/>
+                <xsd:element ref="ErrorLocation" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="ErrorDigest" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="ErrorLocation">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ErrorLocationElementName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="ErrorLocationElementReference" type="xsd:string" minOccurs="0" ups:usage="notused"/>
+                <xsd:element name="ErrorLocationAttributeName" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

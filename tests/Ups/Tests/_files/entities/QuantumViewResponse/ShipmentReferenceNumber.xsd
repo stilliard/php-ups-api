@@ -1,0 +1,13 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="ShipmentReferenceNumber">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="BarCodeIndicator" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Number" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Code" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Value" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

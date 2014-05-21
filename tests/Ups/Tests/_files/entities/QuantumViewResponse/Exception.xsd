@@ -1,0 +1,81 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="Exception">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="PackageReferenceNumber" type="ReferenceNumberType" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="ShipmentReferenceNumber" type="ReferenceNumberType" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="ShipperNumber" type="xsd:string"/>
+                <xsd:element name="TrackingNumber" type="xsd:string"/>
+                <xsd:element name="Date" type="xsd:string"/>
+                <xsd:element name="Time" type="xsd:string"/>
+                <xsd:element name="UpdatedAddress" type="UpdatedAddressType" minOccurs="0"/>
+                <xsd:element name="StatusCode" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="StatusDescription" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="ReasonCode" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="ReasonDescription" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Resolution" type="CodeType" minOccurs="0"/>
+                <xsd:element name="RescheduledDeliveryDate" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="RescheduledDeliveryTime" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="ActivityLocation" type="ActivityLocationType" minOccurs="0"/>
+                <xsd:element name="BillToAccount" type="BillToAccountType" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="CodeType">
+        <xsd:sequence>
+            <xsd:element name="Code" type="xsd:string"/>
+            <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="UpdatedAddressType">
+        <xsd:sequence>
+            <xsd:element name="ConsigneeName" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="StreetNumberLow" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="StreetPrefix" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="StreetName" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="StreetType" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="StreetSuffix" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="AddressExtendedInformation" type="AddressExtendedInformationType" minOccurs="0"
+                         maxOccurs="unbounded"/>
+            <xsd:element name="PoliticalDivision3" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="PoliticalDivision2" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="PoliticalDivision1" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="CountryCode" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="PostcodePrimaryLow" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="AddressExtendedInformationType">
+        <xsd:sequence>
+            <xsd:element name="Type" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Low" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="High" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ActivityLocationType">
+        <xsd:sequence>
+            <xsd:element name="AddressArtifactFormat" type="AddressArtifactFormatType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="AddressArtifactFormatType">
+        <xsd:sequence>
+            <xsd:element name="PoliticalDivision2" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="PoliticalDivision1" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="CountryCode" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="BillToAccountType">
+        <xsd:sequence>
+            <xsd:element name="Option" type="xsd:string"/>
+            <xsd:element name="Number" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ReferenceNumberType">
+        <xsd:sequence>
+            <xsd:element name="BarCodeIndicator" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Number" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Code" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Value" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

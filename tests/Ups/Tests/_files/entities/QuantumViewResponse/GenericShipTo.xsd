@@ -1,0 +1,12 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="GenericShipTo">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LocationID" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="ReceivingAddressName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Bookmark" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

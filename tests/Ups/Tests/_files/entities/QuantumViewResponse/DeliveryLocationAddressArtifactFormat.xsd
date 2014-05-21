@@ -1,0 +1,35 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="DeliveryLocationAddressArtifactFormat">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ConsigneeName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="StreetNumberLow" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="StreetPrefix" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="StreetName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="StreetType" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="StreetSuffix" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="BuildingName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="AddressExtendedInformation" type="AddressExtendedInformationType" minOccurs="0"
+                             maxOccurs="unbounded"/>
+                <xsd:element name="PoliticalDivision3" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="PoliticalDivision2" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="PoliticalDivision1" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="CountryCode" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="PostcodePrimaryLow" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="PostcodeExtendedLow" type="xsd:string" minOccurs="0"/>
+                <xsd:element ref="ResidentialAddressIndicator" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="AddressExtendedInformationType">
+        <xsd:sequence>
+            <xsd:element name="Type" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Low" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="High" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="ResidentialAddressIndicator">
+        <xsd:complexType/>
+    </xsd:element>
+</xsd:schema>

@@ -1,0 +1,24 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="ShipmentServiceOptions">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="SaturdayPickup" minOccurs="0"/>
+                <xsd:element ref="SaturdayDelivery" minOccurs="0"/>
+                <xsd:element name="CallTagARS" type="CallTagARSType" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="SaturdayPickup">
+        <xsd:complexType/>
+    </xsd:element>
+    <xsd:element name="SaturdayDelivery">
+        <xsd:complexType/>
+    </xsd:element>
+    <xsd:complexType name="CallTagARSType">
+        <xsd:sequence>
+            <xsd:element name="Number" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Code" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

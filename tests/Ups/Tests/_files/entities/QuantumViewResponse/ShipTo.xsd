@@ -1,0 +1,35 @@
+<xsd:schema xmlns:ups="http://www.ups.com/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="unqualified">
+    <xsd:element name="ShipTo">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ShipperAssignedIdentificationNumber" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="CompanyName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="AttentionName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="PhoneNumber" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="TaxIdentificationNumber" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="FaxNumber" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="EMailAddress" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Address" type="ShipToAddressType" minOccurs="0"/>
+                <xsd:element name="LocationID" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="ReceivingAddressName" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="ShipToAddressType">
+        <xsd:sequence>
+            <xsd:element name="ConsigneeName" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="AddressLine1" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="AddressLine2" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="AddressLine3" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="City" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="StateProvinceCode" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="PostalCode" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="CountryCode" type="xsd:string" minOccurs="0"/>
+            <xsd:element ref="ResidentialAddressIndicator" minOccurs="0" ups:usage="notused"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="ResidentialAddressIndicator">
+        <xsd:complexType/>
+    </xsd:element>
+</xsd:schema>
