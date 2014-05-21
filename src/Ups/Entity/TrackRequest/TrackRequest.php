@@ -156,11 +156,14 @@ class  TrackRequest implements NodeInterface
 
         $node = $document->createElement('TrackRequest');
         $node->appendChild($this->getRequest()->toNode($document));
-        if (!empty($this->getTrackingNumber())) {
+        $trackingNumber = $this->getTrackingNumber();
+        $shipmentIdentificationNumber = $this->getShipmentIdentificationNumber();
+        $candidateBookmark = $this->getCandidateBookmark();
+        if (!empty($trackingNumber)) {
             $node->appendChild($document->createElement('TrackingNumber', $this->getTrackingNumber()));
-        } elseif (!empty($this->getShipmentIdentificationNumber())) {
+        } elseif (!empty($shipmentIdentificationNumber)) {
             $node->appendChild($document->createElement('ShipmentIdentificationNumber', $this->getShipmentIdentificationNumber()));
-        } elseif (!empty($this->getCandidateBookmark())) {
+        } elseif (!empty($candidateBookmark)) {
             $node->appendChild($document->createElement('CandidateBookmark', $this->getCandidateBookmark()));
         } else {
             $node->appendChild($this->getReferenceNumber()->toNode($document));
