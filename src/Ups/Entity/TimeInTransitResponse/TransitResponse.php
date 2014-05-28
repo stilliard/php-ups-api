@@ -61,7 +61,7 @@ class  TransitResponse implements NodeInterface
     {
         $this->setTransitFrom(new TransitFrom());
         $this->setTransitTo(new TransitTo());
-        $this->setServiceSummary = array();
+        $this->setServiceSummary(array());
 
         if (null !== $attributes) {
             if (isset($attributes->TransitFrom)) {
@@ -87,8 +87,13 @@ class  TransitResponse implements NodeInterface
             }
             if (isset($attributes->ServiceSummary)) {
                 $serviceSummary = $this->getServiceSummary();
-                foreach ($attributes->ServiceSummary as $item) {
-                    $serviceSummary[] = new ServiceSummary($item);
+                if (is_array($attributes->ServiceSummary)) {
+                    foreach ($attributes->ServiceSummary as $item) {
+                        $serviceSummary[] = new ServiceSummary($item);
+                    }
+                }
+                else {
+                    $serviceSummary[] = new ServiceSummary($attributes);
                 }
                 $this->setServiceSummary($serviceSummary);
             }

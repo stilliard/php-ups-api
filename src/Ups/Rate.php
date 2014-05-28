@@ -7,6 +7,7 @@ use SimpleXMLElement;
 use Exception;
 use Ups\Entity\RateRequest;
 use Ups\Entity\RateResponse;
+use Ups\Entity\RateResponse\RatingServiceSelectionResponse;
 
 /**
  * Rate API Wrapper
@@ -39,7 +40,7 @@ class Rate extends Ups
      * errors in the response back from UPS
      *
      * @param $rateRequest
-     * @return RateRequest
+     * @return RateResponse\RatingServiceSelectionResponse
      * @throws \Exception
      */
     private function sendRequest($rateRequest)
@@ -60,59 +61,17 @@ class Rate extends Ups
     /**
      * Create the Rate request
      *
-     * @param RateRequest $rateRequest The request details. Refer to the UPS documentation for available structure
+     * @param RateRequest\RatingServiceSelectionRequest $rateRequest The request details. Refer to the UPS documentation for available structure
      * @return  string
      */
     private function createRequest($rateRequest)
     {
-        $shipment = $rateRequest->Shipment;
-
+        $rateRequest->getRequest()->setRequestAction('Rate');
+        $rateRequest->getRequest()->setRequestOption($this->requestOption);
+        $rateRequest->getRequest()->setTransactionReference(new RateRequest\TransactionReference());
         $xml = new DOMDocument();
         $xml->formatOutput = true;
-
-        $trackRequest = $xml->appendChild($xml->createElement("RatingServiceSelectionRequest"));
-        $trackRequest->setAttribute('xml:lang', 'en-US');
-
-        $request = $trackRequest->appendChild($xml->createElement("Request"));
-
-        $node = $xml->importNode($this->createTransactionNode(), true);
-        $request->appendChild($node);
-
-        $request->appendChild($xml->createElement("RequestAction", "Rate"));
-        $request->appendChild($xml->createElement("RequestOption", $this->requestOption));
-
-        $shipmentNode = $trackRequest->appendChild($xml->createElement('Shipment'));
-
-        // Support specifying an individual service
-        if (isset($shipment->Service)) {
-            $serviceNode = $shipmentNode->appendChild($xml->createElement('Service'));
-            Utilities::appendChild($shipment->Service, 'Code', $serviceNode);
-            Utilities::appendChild($shipment->Service, 'Description', $serviceNode);
-        }
-
-        if (isset($shipment->Shipper)) {
-            $shipper = $shipmentNode->appendChild($xml->createElement("Shipper"));
-
-            if (isset($shipment->Shipper->ShipperNumber)) {
-                $shipper->appendChild($xml->createElement("ShipperNumber", $shipment->Shipper->ShipperNumber));
-            }
-
-            if (isset($shipment->Shipper->Address)) {
-                Utilities::addAddressNode($shipment->Shipper->Address, $shipper);
-            }
-        }
-
-        if (isset($shipment->ShipFrom)) {
-            $shipFrom = $shipmentNode->appendChild($xml->createElement("ShipFrom"));
-            Utilities::addLocationInformation($shipment->ShipFrom, $shipFrom);
-        }
-
-        if (isset($shipment->ShipTo)) {
-            $shipTo = $shipmentNode->appendChild($xml->createElement("ShipTo"));
-            Utilities::addLocationInformation($shipment->ShipTo, $shipTo);
-        }
-
-        Utilities::addPackages($shipment, $shipmentNode);
+        $xml->appendChild($rateRequest->toNode($xml));
 
         return $xml->saveXML();
     }
@@ -121,7 +80,7 @@ class Rate extends Ups
      * Format the response
      *
      * @param   SimpleXMLElement $response
-     * @return  stdClass
+     * @return  RateResponse\RatingServiceSelectionResponse
      */
     private function formatResponse(SimpleXMLElement $response)
     {
@@ -130,6 +89,6 @@ class Rate extends Ups
 
         $result = $this->convertXmlObject($response);
 
-        return new RateResponse($result);
+        return new RatingServiceSelectionResponse($result);
     }
 }

@@ -14,7 +14,7 @@ class  TransitFromList implements NodeInterface
 
     function __construct($attributes = null)
     {
-        $this->setCandidate = array();
+        $this->setCandidate(array());
 
         if (null !== $attributes) {
             if (isset($attributes->Candidate)) {

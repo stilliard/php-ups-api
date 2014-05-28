@@ -79,7 +79,7 @@ class  RatedShipment implements NodeInterface
         $this->setTransportationCharges(new TransportationCharges());
         $this->setServiceOptionsCharges(new ServiceOptionsCharges());
         $this->setTotalCharges(new TotalCharges());
-        $this->setRatedPackage = array();
+        $this->setRatedPackage(array());
 
         if (null !== $attributes) {
             if (isset($attributes->Service)) {
@@ -90,8 +90,13 @@ class  RatedShipment implements NodeInterface
             }
             if (isset($attributes->RatedShipmentWarning)) {
                 $ratedShipmentWarning = $this->getRatedShipmentWarning();
-                foreach ($attributes->RatedShipmentWarning as $item) {
-                    $ratedShipmentWarning[] = $item;
+                if (is_array($attributes->RatedShipmentWarning)) {
+                    foreach ($attributes->RatedShipmentWarning as $item) {
+                        $ratedShipmentWarning[] = $item;
+                    }
+                }
+                else {
+                    $ratedShipmentWarning[] = $attributes->RatedShipmentWarning;
                 }
                 $this->setRatedShipmentWarning($ratedShipmentWarning);
             }

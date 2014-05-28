@@ -28,7 +28,7 @@ class TimeInTransit extends Ups
      * errors in the response back from UPS
      *
      * @param $timeInTransitRequest
-     * @return TimeInTransitRequest
+     * @return TimeInTransitResponse\TimeInTransitResponse
      * @throws \Exception
      */
     private function sendRequest($timeInTransitRequest)
@@ -49,58 +49,16 @@ class TimeInTransit extends Ups
     /**
      * Create the TimeInTransit request
      *
-     * @param TimeInTransitRequest $timeInTransitRequest The request details. Refer to the UPS documentation for available structure
+     * @param TimeInTransitRequest\TimeInTransitRequest $timeInTransitRequest The request details. Refer to the UPS documentation for available structure
      * @return  string
      */
     private function createRequest($timeInTransitRequest)
     {
+        $timeInTransitRequest->getRequest()->setRequestAction('TimeInTransit');
+        $timeInTransitRequest->getRequest()->setTransactionReference(new TimeInTransitRequest\TransactionReference());
         $xml = new DOMDocument();
         $xml->formatOutput = true;
-
-        $trackRequest = $xml->appendChild($xml->createElement("TimeInTransitRequest"));
-        $trackRequest->setAttribute('xml:lang', 'en-US');
-
-        $request = $trackRequest->appendChild($xml->createElement("Request"));
-
-        $node = $xml->importNode($this->createTransactionNode(), true);
-        $request->appendChild($node);
-
-        $request->appendChild($xml->createElement("RequestAction", "TimeInTransit"));
-
-        $transitFromNode = $trackRequest->appendChild($xml->createElement('TransitFrom'));
-        if (isset($timeInTransitRequest->TransitFrom)) {
-            Utilities::addAddressArtifactNode($timeInTransitRequest->TransitFrom, $transitFromNode);
-        }
-
-        $transitToNode = $trackRequest->appendChild($xml->createElement('TransitTo'));
-        if (isset($timeInTransitRequest->TransitTo)) {
-            Utilities::addAddressArtifactNode($timeInTransitRequest->TransitTo, $transitToNode);
-        }
-
-        $shipmentWeightNode = $trackRequest->appendChild($xml->createElement('ShipmentWeight'));
-        if (isset($timeInTransitRequest->ShipmentWeight)) {
-            $shipmentWeightNode->appendChild($xml->createElement("Weight", $timeInTransitRequest->ShipmentWeight->Weight));
-            $uom = $shipmentWeightNode->appendChild($xml->createElement("UnitOfMeasurement"));
-            $uom->appendChild($xml->createElement("Code", $timeInTransitRequest->ShipmentWeight->UnitOfMeasurement->Code));
-            $uom->appendChild($xml->createElement("Description", $timeInTransitRequest->ShipmentWeight->UnitOfMeasurement->Description));
-        }
-
-        if (isset($timeInTransitRequest->TotalPackagesInShipment)) {
-            $trackRequest->appendChild($xml->createElement("TotalPackagesInShipment", $timeInTransitRequest->TotalPackagesInShipment));
-        }
-
-        $invoiceLineTotalNode = $trackRequest->appendChild($xml->createElement('InvoiceLineTotal'));
-        if (isset($timeInTransitRequest->InvoiceLineTotal)) {
-            $invoiceLineTotalNode->appendChild($xml->createElement("CurrencyCode", $timeInTransitRequest->InvoiceLineTotal->CurrencyCode));
-            $invoiceLineTotalNode->appendChild($xml->createElement("MonetaryValue", $timeInTransitRequest->InvoiceLineTotal->MonetaryValue));
-        }
-
-        if (isset($timeInTransitRequest->PickupDate)) {
-            $trackRequest->appendChild($xml->createElement("PickupDate", $timeInTransitRequest->PickupDate));
-        }
-
-        $trackRequest->appendChild($xml->createElement("DocumentsOnlyIndicator"));
-
+        $xml->appendChild($timeInTransitRequest->toNode($xml));
 
         return $xml->saveXML();
     }
@@ -109,7 +67,7 @@ class TimeInTransit extends Ups
      * Format the response
      *
      * @param   SimpleXMLElement $response
-     * @return  stdClass
+     * @return  TimeInTransitResponse\TimeInTransitResponse
      */
     private function formatResponse(SimpleXMLElement $response)
     {
@@ -118,6 +76,6 @@ class TimeInTransit extends Ups
 
         $result = $this->convertXmlObject($response);
 
-        return new TimeInTransitResponse($result->TransitResponse);
+        return new TimeInTransitResponse\TimeInTransitResponse($result->TransitResponse);
     }
 }

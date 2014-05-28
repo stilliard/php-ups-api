@@ -29,6 +29,8 @@ class  TimeInTransitResponse implements NodeInterface
 
     function __construct($attributes = null)
     {
+        $this->setTransitResponse(array());
+
         $this->setResponse(new Response());
 
         if (null !== $attributes) {
@@ -37,8 +39,12 @@ class  TimeInTransitResponse implements NodeInterface
             }
             if (isset($attributes->TransitResponse)) {
                 $transitResponse = $this->getTransitResponse();
-                foreach ($attributes->TransitResponse as $item) {
-                    $transitResponse[] = new TransitResponse($item);
+                if (is_array($attributes->TransitResponse)) {
+                    foreach ($attributes->TransitResponse as $item) {
+                        $transitResponse[] = new TransitResponse($item);
+                    }
+                } else {
+                    $transitResponse[] = new TransitResponse($attributes->TransitResponse);
                 }
                 $this->setTransitResponse($transitResponse);
             }

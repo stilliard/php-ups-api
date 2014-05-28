@@ -20,7 +20,7 @@ class  RatingServiceSelectionResponse implements NodeInterface
     function __construct($attributes = null)
     {
         $this->setResponse(new Response());
-        $this->setRatedShipment = array();
+        $this->setRatedShipment(array());
 
         if (null !== $attributes) {
             if (isset($attributes->Response)) {
@@ -28,8 +28,12 @@ class  RatingServiceSelectionResponse implements NodeInterface
             }
             if (isset($attributes->RatedShipment)) {
                 $ratedShipment = $this->getRatedShipment();
-                foreach ($attributes->RatedShipment as $item) {
-                    $ratedShipment[] = new RatedShipment($item);
+                if (is_array($attributes->RatedShipment)) {
+                    foreach ($attributes->RatedShipment as $item) {
+                        $ratedShipment[] = new RatedShipment($item);
+                    }
+                } else {
+                    $ratedShipment[] = new RatedShipment($attributes->RatedShipment);
                 }
                 $this->setRatedShipment($ratedShipment);
             }

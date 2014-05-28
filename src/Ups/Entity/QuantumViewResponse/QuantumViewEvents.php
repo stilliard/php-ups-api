@@ -19,7 +19,7 @@ class  QuantumViewEvents implements NodeInterface
 
     function __construct($attributes = null)
     {
-        $this->setSubscriptionEvents = array();
+        $this->setSubscriptionEvents(array());
 
         if (null !== $attributes) {
             if (isset($attributes->SubscriberID)) {
