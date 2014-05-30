@@ -28,7 +28,7 @@ class LabelRecovery extends Ups
      * errors in the response back from UPS
      *
      * @param $labelRecoveryRequest
-     * @return LabelRecoveryRequest
+     * @return LabelRecoveryResponse\LabelRecoveryResponse
      * @throws \Exception
      */
     private function sendRequest($labelRecoveryRequest)
@@ -49,55 +49,16 @@ class LabelRecovery extends Ups
     /**
      * Create the LabelRecovery request
      *
-     * @param LabelRecoveryRequest $labelRecoveryRequest The request details. Refer to the UPS documentation for available structure
+     * @param LabelRecoveryRequest\LabelRecoveryRequest $labelRecoveryRequest The request details. Refer to the UPS documentation for available structure
      * @return  string
      */
     private function createRequest($labelRecoveryRequest)
     {
+        $labelRecoveryRequest->getRequest()->setRequestAction('LabelRecovery');
+        $labelRecoveryRequest->getRequest()->setTransactionReference(new LabelRecoveryRequest\TransactionReference());
         $xml = new DOMDocument();
         $xml->formatOutput = true;
-
-        $trackRequest = $xml->appendChild($xml->createElement("LabelRecoveryRequest"));
-        $trackRequest->setAttribute('xml:lang', 'en-US');
-
-        $request = $trackRequest->appendChild($xml->createElement("Request"));
-
-        $node = $xml->importNode($this->createTransactionNode(), true);
-        $request->appendChild($node);
-
-        $request->appendChild($xml->createElement("RequestAction", "LabelRecovery"));
-
-        $labelSpecificationNode = $trackRequest->appendChild($xml->createElement('LabelSpecification'));
-        if (isset($labelRecoveryRequest->LabelSpecification)) {
-            $labelSpecificationNode->appendChild($xml->createElement('HTTPUserAgent', $labelRecoveryRequest->LabelSpecification->HTTPUserAgent));
-            $labelImageFormatNode = $labelSpecificationNode->appendChild($xml->createElement('LabelImageFormat'));
-            $labelImageFormatNode->appendChild($xml->createElement('Code', $labelRecoveryRequest->LabelSpecification->LabelImageFormat->Code));
-        }
-
-        if (isset($labelRecoveryRequest->Translate)) {
-            $translateNode = $trackRequest->appendChild($xml->createElement('Translate'));
-            $translateNode->appendChild($xml->createElement('LanguageCode', $labelRecoveryRequest->Translate->LanguageCode));
-            $translateNode->appendChild($xml->createElement('DialectCode', $labelRecoveryRequest->Translate->DialectCode));
-            $translateNode->appendChild($xml->createElement('Code', $labelRecoveryRequest->Translate->Code));
-        }
-
-        if (isset($labelRecoveryRequest->LabelLinkIndicator)) {
-            $labelLinkIndicatorNode = $trackRequest->appendChild($xml->createElement('LabelLinkIndicator'));
-            $labelLinkIndicatorNode->appendChild($xml->createElement('LabelLinkIndicator'));
-        }
-
-        if (isset($labelRecoveryRequest->TrackingNumber)) {
-            $trackRequest->appendChild($xml->createElement('TrackingNumber', $labelRecoveryRequest->TrackingNumber));
-        }
-
-        if (isset($labelRecoveryRequest->ReferenceNumber)) {
-            $referenceNumberNode = $trackRequest->appendChild($xml->createElement('ReferenceNumber'));
-            $referenceNumberNode->appendChild($xml->createElement('Value', $labelRecoveryRequest->ReferenceNumber->Value));
-        }
-
-        if (isset($labelRecoveryRequest->ShipperNumber)) {
-            $trackRequest->appendChild($xml->createElement('ShipperNumber', $labelRecoveryRequest->ShipperNumber));
-        }
+        $xml->appendChild($labelRecoveryRequest->toNode($xml));
 
         return $xml->saveXML();
     }
@@ -106,7 +67,7 @@ class LabelRecovery extends Ups
      * Format the response
      *
      * @param   SimpleXMLElement $response
-     * @return  stdClass
+     * @return  LabelRecoveryResponse\LabelRecoveryResponse
      */
     private function formatResponse(SimpleXMLElement $response)
     {
@@ -115,6 +76,6 @@ class LabelRecovery extends Ups
 
         $result = $this->convertXmlObject($response);
 
-        return new LabelRecoveryResponse($result->LabelRecoveryResponse);
+        return new LabelRecoveryResponse\LabelRecoveryResponse($result->LabelRecoveryResponse);
     }
 }
