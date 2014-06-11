@@ -12,7 +12,8 @@ class  RatingServiceSelectionResponseTest extends PHPUnit_Framework_TestCase
         $ratingServiceSelectionResponse = new \Ups\Entity\RateResponse\RatingServiceSelectionResponse();
         $ratingServiceSelectionResponse->setResponse(new \Ups\Entity\RateResponse\Response());
         $ratingServiceSelectionResponse->setRatedShipment(array(new \Ups\Entity\RateResponse\RatedShipment()));
-        $ratingServiceSelectionResponse->getRatedShipment()[0]->setRatedPackage(array(new \Ups\Entity\RateResponse\RatedPackage()));
+        $ratedShipment = $ratingServiceSelectionResponse->getRatedShipment();
+        $ratedShipment[0]->setRatedPackage(array(new \Ups\Entity\RateResponse\RatedPackage()));
 
         $xml = $ratingServiceSelectionResponse->toNode();
 
