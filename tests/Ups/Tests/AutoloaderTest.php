@@ -9,7 +9,7 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase
     public function testRegister()
     {
         Autoloader::register();
-        $this->assertContains(['Ups\\Autoloader', 'autoload'], spl_autoload_functions());
+        $this->assertContains(array('Ups\\Autoloader', 'autoload'), spl_autoload_functions());
     }
 
     public function testAutoload()
