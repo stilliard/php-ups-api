@@ -8,9 +8,9 @@ use Ups\NodeInterface;
 class  Package implements NodeInterface
 {
     /**
-     * @var \Ups\Entity\RateRequest\Packaging
+     * @var \Ups\Entity\RateRequest\PackagingType
      */
-    private $packaging;
+    private $packagingType;
 
     /**
      * @var \Ups\Entity\RateRequest\Dimensions
@@ -41,8 +41,8 @@ class  Package implements NodeInterface
     {
 
         if (null !== $attributes) {
-            if (isset($attributes->Packaging)) {
-                $this->setPackaging(new Packaging($attributes->Packaging));
+            if (isset($attributes->PackagingType)) {
+                $this->setPackagingType(new PackagingType($attributes->PackagingType));
             }
             if (isset($attributes->Dimensions)) {
                 $this->setDimensions(new Dimensions($attributes->Dimensions));
@@ -73,8 +73,8 @@ class  Package implements NodeInterface
         }
 
         $node = $document->createElement('Package');
-        if (null !== $this->getPackaging()) {
-            $node->appendChild($this->getPackaging()->toNode($document));
+        if (null !== $this->getPackagingType()) {
+            $node->appendChild($this->getPackagingType()->toNode($document));
         }
         if (null !== $this->getDimensions()) {
             $node->appendChild($this->getDimensions()->toNode($document));
@@ -95,21 +95,21 @@ class  Package implements NodeInterface
     }
 
     /**
-     * @param \Ups\Entity\RateRequest\Packaging $packaging
+     * @param \Ups\Entity\RateRequest\PackagingType $packagingType
      * @return $this
      */
-    public function setPackaging($packaging)
+    public function setPackagingType($packagingType)
     {
-        $this->packaging = $packaging;
+        $this->packagingType = $packagingType;
         return $this;
     }
 
     /**
-     * @return \Ups\Entity\RateRequest\Packaging
+     * @return \Ups\Entity\RateRequest\PackagingType
      */
-    public function getPackaging()
+    public function getPackagingType()
     {
-        return $this->packaging;
+        return $this->packagingType;
     }
 
     /**
