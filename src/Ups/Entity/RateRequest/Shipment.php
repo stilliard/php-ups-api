@@ -156,6 +156,20 @@ class  Shipment implements NodeInterface
     }
 
     /**
+     * Helper to add packages
+     * 
+     * @param Package $package
+     * @return $this
+     */
+    public function addPackage(Package $package)
+    {
+        $packages = $this->getPackage();
+        $packages[] = $package;
+        $this->setPackage($packages);
+        return $this;
+    }
+
+    /**
      * @param \Ups\Entity\RateRequest\Shipper $shipper
      * @return $this
      */
